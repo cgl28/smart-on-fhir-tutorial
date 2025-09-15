@@ -1,8 +1,5 @@
-console.log("✅ Script loaded and executing.");
-
-
 (function(window) {
-  console.log("SMART app script loaded.");
+  console.log("✅ Script loaded and executing.");
 
   function getBloodPressureValue(BPObservations, typeOfPressure) {
     const formattedBPObservations = [];
@@ -78,7 +75,7 @@ console.log("✅ Script loaded and executing.");
 
       Promise.all([patientPromise, observationPromise])
         .then(([patient, observations]) => {
-          if (!observations || observations.length === 0) {
+          if (!observations || !observations.entry || observations.entry.length === 0) {
             console.warn("No observations returned from filtered query. Trying broader query...");
             return client.request(`Observation?patient=${client.patient.id}`)
               .then(allObservations => {
@@ -93,8 +90,8 @@ console.log("✅ Script loaded and executing.");
         .then(([patient, observations]) => {
           const resources = observations.entry?.map(e => e.resource) || [];
           console.log("Parsed Observation resources:", resources);
-          const byCodes = client.byCodes(resources, 'code');
 
+          const byCodes = client.byCodes(resources, 'code');
           const p = defaultPatient();
 
           p.fname = patient.name?.[0]?.given?.join(' ') || '';
