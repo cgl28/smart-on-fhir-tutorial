@@ -68,27 +68,32 @@
         ].join(',')
       });
 
-      return Promise.all([patientPromise, observationPromise]);
-    })
-    .then(([patient, observations]) => {
-      const byCodes = client.byCodes(observations, 'code');
-      const p = defaultPatient();
+      Promise.all([patientPromise, observationPromise])
+        .then(([patient, observations]) => {
+          const byCodes = client.byCodes(observations, 'code');
+          const p = defaultPatient();
 
-      p.fname = patient.name?.[0]?.given?.join(' ') || '';
-      p.lname = patient.name?.[0]?.family || '';
-      p.gender = patient.gender || '';
-      p.birthdate = patient.birthDate || '';
-      p.height = getQuantityValueAndUnit(byCodes('8302-2')?.[0]);
-      p.systolicbp = getBloodPressureValue(byCodes('55284-4'), '8480-6');
-      p.diastolicbp = getBloodPressureValue(byCodes('55284-4'), '8462-4');
-      p.hdl = getQuantityValueAndUnit(byCodes('2085-9')?.[0]);
-      p.ldl = getQuantityValueAndUnit(byCodes('2089-1')?.[0]);
+          p.fname = patient.name?.[0]?.given?.join(' ') || '';
+          p.lname = patient.name?.[0]?.family || '';
+          p.gender = patient.gender || '';
+          p.birthdate = patient.birthDate || '';
+          p.height = getQuantityValueAndUnit(byCodes('8302-2')?.[0]);
+          p.systolicbp = getBloodPressureValue(byCodes('55284-4'), '8480-6');
+          p.diastolicbp = getBloodPressureValue(byCodes('55284-4'), '8462-4');
+          p.hdl = getQuantityValueAndUnit(byCodes('2085-9')?.[0]);
+          p.ldl = getQuantityValueAndUnit(byCodes('2089-1')?.[0]);
 
-      window.drawVisualization(p);
+          window.drawVisualization(p);
+        })
+        .catch(error => {
+          console.error('Failed to call FHIR Service', error);
+          $('#loading').hide();
+          $('#errors').html('<p> Failed to call FHIR Service </p>');
+        });
     })
     .catch(error => {
-      console.error('Failed to call FHIR Service', error);
+      console.error('Failed to initialize SMART client', error);
       $('#loading').hide();
-      $('#errors').html('<p> Failed to call FHIR Service </p>');
+      $('#errors').html('<p> Failed to initialize SMART client </p>');
     });
 })(window);
