@@ -91,7 +91,10 @@ console.log("✅ Script loaded and executing.");
           }
         })
         .then(([patient, observations]) => {
-          const byCodes = client.byCodes(observations, 'code');
+          const resources = observations.entry?.map(e => e.resource) || [];
+          console.log("Parsed Observation resources:", resources);
+          const byCodes = client.byCodes(resources, 'code');
+
           const p = defaultPatient();
 
           p.fname = patient.name?.[0]?.given?.join(' ') || '';
