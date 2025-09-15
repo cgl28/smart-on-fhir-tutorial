@@ -71,7 +71,7 @@
       return Promise.all([patientPromise, observationPromise]);
     })
     .then(([patient, observations]) => {
-      const byCodes = FHIR.byCodes(observations, 'code');
+      const byCodes = client.byCodes(observations, 'code');
       const p = defaultPatient();
 
       p.fname = patient.name?.[0]?.given?.join(' ') || '';
