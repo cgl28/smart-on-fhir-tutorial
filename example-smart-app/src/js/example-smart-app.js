@@ -27,6 +27,18 @@
     return undefined;
   }
 
+  function getComponentValue(observations, loincCode) {
+    for (const obs of observations) {
+      const component = obs.component?.find(c =>
+        c.code?.coding?.some(coding => coding.code === loincCode)
+      );
+      if (component?.valueQuantity) {
+        return `${component.valueQuantity.value} ${component.valueQuantity.unit}`;
+      }
+    }
+    return undefined;
+  }
+
   function defaultPatient() {
     return {
       fname: '',
@@ -99,9 +111,12 @@
           p.gender = patient.gender || '';
           p.birthdate = patient.birthDate || '';
           p.height = getQuantityValueAndUnit(byCodes('8302-2')?.[0]);
-          p.hdl = getQuantityValueAndUnit(byCodes('2085-9')?.[0]);
-          p.ldl = getQuantityValueAndUnit(byCodes('2089-1')?.[0]);
 
+          // HDL and LDL with fallback to component parsing
+          p.hdl = getQuantityValueAndUnit(byCodes('2085-9')?.[0]) || getComponentValue(resources, '2085-9');
+          p.ldl = getQuantityValueAndUnit(byCodes('2089-1')?.[0]) || getComponentValue(resources, '2089-1');
+
+          // Blood pressure logic with fallback
           const bpPanel = byCodes('55284-4');
           if (bpPanel?.length) {
             p.systolicbp = getBloodPressureValue(bpPanel, '8480-6');
