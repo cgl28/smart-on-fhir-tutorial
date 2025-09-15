@@ -70,6 +70,8 @@
 
       Promise.all([patientPromise, observationPromise])
         .then(([patient, observations]) => {
+          console.log("Raw Observations:", observations);
+
           const byCodes = client.byCodes(observations, 'code');
           const p = defaultPatient();
 
@@ -78,10 +80,21 @@
           p.gender = patient.gender || '';
           p.birthdate = patient.birthDate || '';
           p.height = getQuantityValueAndUnit(byCodes('8302-2')?.[0]);
-          p.systolicbp = getBloodPressureValue(byCodes('55284-4'), '8480-6');
-          p.diastolicbp = getBloodPressureValue(byCodes('55284-4'), '8462-4');
           p.hdl = getQuantityValueAndUnit(byCodes('2085-9')?.[0]);
           p.ldl = getQuantityValueAndUnit(byCodes('2089-1')?.[0]);
+
+          // Blood pressure logic with fallback
+          const bpPanel = byCodes('55284-4');
+          if (bpPanel?.length) {
+            p.systolicbp = getBloodPressureValue(bpPanel, '8480-6');
+            p.diastolicbp = getBloodPressureValue(bpPanel, '8462-4');
+          } else {
+            console.warn("No BP panel found. Checking standalone systolic/diastolic...");
+            const systolic = byCodes('8480-6')?.[0];
+            const diastolic = byCodes('8462-4')?.[0];
+            p.systolicbp = getQuantityValueAndUnit(systolic);
+            p.diastolicbp = getQuantityValueAndUnit(diastolic);
+          }
 
           window.drawVisualization(p);
         })
@@ -97,4 +110,3 @@
       $('#errors').html('<p> Failed to initialize SMART client </p>');
     });
 })(window);
-
