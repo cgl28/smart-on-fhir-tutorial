@@ -1,3 +1,6 @@
+console.log("✅ Script loaded and executing.");
+
+
 (function(window) {
   console.log("SMART app script loaded.");
 
