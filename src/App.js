@@ -1,25 +1,26 @@
 import logo from './logo.svg';
 import './App.css';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
+import LaunchScreen from './LaunchScreen';
+import SpecialtySelector from './SpecialtySelector';
+import ServiceSelector from './ServiceSelector';
+import ReferralForm from './ReferralForm';
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<LaunchScreen />} />
+        <Route path="/specialty" element={<SpecialtySelector />} />
+        <Route path="/service" element={<ServiceSelector />} />
+        <Route path="/form/:type/:target" element={<ReferralForm />} />
+      </Routes>
+    </Router>
   );
 }
+
+
 
 export default App;
