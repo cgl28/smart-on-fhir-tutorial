@@ -59,12 +59,12 @@
       const observationPromise = client.request('Observation', {
         patient: client.patient.id,
         code: [
-          'http://loinc.org|8302-2', // height
-          'http://loinc.org|8462-4', // diastolic BP
-          'http://loinc.org|8480-6', // systolic BP
-          'http://loinc.org|2085-9', // HDL
-          'http://loinc.org|2089-1', // LDL
-          'http://loinc.org|55284-4' // BP panel
+          'http://loinc.org|8302-2',
+          'http://loinc.org|8462-4',
+          'http://loinc.org|8480-6',
+          'http://loinc.org|2085-9',
+          'http://loinc.org|2089-1',
+          'http://loinc.org|55284-4'
         ].join(',')
       });
 
@@ -97,3 +97,4 @@
       $('#errors').html('<p> Failed to initialize SMART client </p>');
     });
 })(window);
+
