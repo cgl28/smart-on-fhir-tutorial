@@ -1,5 +1,6 @@
 (function(window) {
   console.log("✅ Script loaded and executing.");
+  console.log("✅ GitHub Publoshing no 1.");
 
   function getBloodPressureValue(BPObservations, typeOfPressure) {
     const formattedBPObservations = [];
